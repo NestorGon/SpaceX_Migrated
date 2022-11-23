@@ -17,11 +17,12 @@ class CompanyTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverPage(
       title: context.translate('spacex.company.title'),
-      header: SwiperHeader(list: List.from(SpaceXPhotos.company)..shuffle()),
+      // header: SwiperHeader(list: List.from(SpaceXPhotos.company)..shuffle()),
       popupMenu: Menu.home,
       children: [
-        _ComapnyInfoView(),
-        _AchievementsListView(),
+        Text('Textttt')
+        // _ComapnyInfoView(),
+        // _AchievementsListView(),
       ],
     );
   }
@@ -31,6 +32,7 @@ class _ComapnyInfoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RequestBuilder<CompanyCubit, CompanyInfo>(
+      onError: (context, state, errorMessage) => ErrorView<CompanyCubit>(),
       onLoading: (context, state, value) => LoadingSliverView(),
       onLoaded: (context, state, value) => SliverToBoxAdapter(
         child: Column(
@@ -97,6 +99,7 @@ class _AchievementsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RequestBuilder<AchievementsCubit, List<Achievement>>(
+      onError: (context, state, errorMessage) => ErrorView<AchievementsCubit>(),
       onLoading: (context, state, vale) => LoadingSliverView(),
       onLoaded: (context, state, value) => SliverToBoxAdapter(
         child: Column(

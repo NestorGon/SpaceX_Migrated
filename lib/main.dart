@@ -65,6 +65,7 @@ Future<void> main() async {
     ),
     companyRepository: CompanyRepository(
       CompanyService(httpClient),
+      db,
     ),
     changelogRepository: ChangelogRepository(
       ChangelogService(httpClient),
