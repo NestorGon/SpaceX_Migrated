@@ -17,7 +17,7 @@ class LaunchesRepository
 
   @override
   Future<List<List<Launch>>> fetchData() {
-    return compute(fetchingData,{});
+    return fetchingData({});
   }
 
   Future<List<List<Launch>>> fetchingData(data) async {
@@ -36,8 +36,8 @@ class LaunchesRepository
     } else {
       final response = await service.getLaunches();
       storedLaunches = response.data['docs'];
-      store.record('launches').put(db, jsonEncode(storedLaunches));
-      store.record('expire_launches').put(db, DateTime.now().add(Duration(seconds: 120)).millisecondsSinceEpoch.toString());
+      await store.record('launches').put(db, jsonEncode(storedLaunches));
+      await store.record('expire_launches').put(db, DateTime.now().add(Duration(seconds: 120)).millisecondsSinceEpoch.toString());
     }
 
     final launches = [

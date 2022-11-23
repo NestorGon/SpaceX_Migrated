@@ -14,7 +14,11 @@ class LaunchesCubit
     emit(RequestState.loading(state.value));
 
     try {
-      repository.fetchData().then((value) => emit(RequestState.loaded(value)));
+      repository
+          .fetchData()
+          .then((value) => emit(RequestState.loaded(value)))
+          .catchError((e) => emit(RequestState.error(e.toString())))
+          .timeout(Duration(seconds: 5));
     } catch (e) {
       emit(RequestState.error(e.toString()));
     }
