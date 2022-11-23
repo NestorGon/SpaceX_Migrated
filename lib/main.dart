@@ -6,7 +6,9 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sembast/sembast_io.dart';
 
 import 'cubits/index.dart';
 import 'repositories/index.dart';
@@ -20,6 +22,11 @@ Future<void> main() async {
         ? HydratedStorage.webStorageDirectory
         : await getTemporaryDirectory(),
   );
+  var dir = await getApplicationDocumentsDirectory();
+  await dir.create(recursive: true);
+  var dbPath = join(dir.path, 'my_database.db');
+  var db = await databaseFactoryIo.openDatabase(dbPath);
+
   Bloc.observer = CherryBlocObserver();
 
   final httpClient = Dio();
@@ -31,7 +38,8 @@ Future<void> main() async {
             android: AndroidNotificationDetails(
               'channel.launches',
               'Launches notifications',
-              channelDescription: 'Stay up-to-date with upcoming SpaceX launches',
+              channelDescription:
+                  'Stay up-to-date with upcoming SpaceX launches',
               importance: Importance.high,
             ),
             iOS: DarwinNotificationDetails(),
@@ -50,6 +58,7 @@ Future<void> main() async {
     ),
     launchesRepository: LaunchesRepository(
       LaunchesService(httpClient),
+      db,
     ),
     achievementsRepository: AchievementsRepository(
       AchievementsService(httpClient),
