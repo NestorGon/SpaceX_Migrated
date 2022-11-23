@@ -14,9 +14,7 @@ class LaunchesCubit
     emit(RequestState.loading(state.value));
 
     try {
-      final data = await repository.fetchData();
-
-      emit(RequestState.loaded(data));
+      repository.fetchData().then((value) => emit(RequestState.loaded(value)));
     } catch (e) {
       emit(RequestState.error(e.toString()));
     }
