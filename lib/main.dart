@@ -63,9 +63,11 @@ Future<void> main() async {
     ),
     achievementsRepository: AchievementsRepository(
       AchievementsService(httpClient),
+      db,
     ),
     companyRepository: CompanyRepository(
       CompanyService(httpClient),
+      db,
     ),
     changelogRepository: ChangelogRepository(
       ChangelogService(httpClient),

@@ -1,6 +1,7 @@
 import 'package:cherry_components/cherry_components.dart';
 import 'package:expand_widget/expand_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_request_bloc/flutter_request_bloc.dart';
 import 'package:row_collection/row_collection.dart';
 import 'package:row_item/row_item.dart';
@@ -15,14 +16,20 @@ import '../../widgets/index.dart';
 class CompanyTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SliverPage(
-      title: context.translate('spacex.company.title'),
-      header: SwiperHeader(list: List.from(SpaceXPhotos.company)..shuffle()),
-      popupMenu: Menu.home,
-      children: [
-        _ComapnyInfoView(),
-        _AchievementsListView(),
-      ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        BlocProvider.of<CompanyCubit>(context).loadData();
+        BlocProvider.of<AchievementsCubit>(context).loadData();
+      },
+      child: SliverPage(
+        title: context.translate('spacex.company.title'),
+        header: SwiperHeader(list: List.from(SpaceXPhotos.company)..shuffle()),
+        popupMenu: Menu.home,
+        children: [
+          _ComapnyInfoView(),
+          _AchievementsListView(),
+        ],
+      ),
     );
   }
 }
@@ -31,6 +38,17 @@ class _ComapnyInfoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RequestBuilder<CompanyCubit, CompanyInfo>(
+      onError: (context, state, errorMessage) => SliverToBoxAdapter(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(40.0),
+            child: Text(
+              'Verify your internet connection and refresh again to see all company info, achievements and images',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+          ),
+        ),
+      ),
       onLoading: (context, state, value) => LoadingSliverView(),
       onLoaded: (context, state, value) => SliverToBoxAdapter(
         child: Column(
@@ -97,6 +115,9 @@ class _AchievementsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RequestBuilder<AchievementsCubit, List<Achievement>>(
+      onError: (context, state, errorMessage) => SliverToBoxAdapter(
+        child: Text(''),
+      ),
       onLoading: (context, state, vale) => LoadingSliverView(),
       onLoaded: (context, state, value) => SliverToBoxAdapter(
         child: Column(
