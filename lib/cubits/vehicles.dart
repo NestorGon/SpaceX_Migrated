@@ -12,9 +12,14 @@ class VehiclesCubit extends RequestCubit<VehiclesRepository, List<Vehicle>> {
     emit(RequestState.loading(state.value));
 
     try {
-      final data = await repository.fetchData();
-
-      emit(RequestState.loaded(data));
+      repository
+          .fetchData()
+          .then((value) {
+            print(value);
+            emit(RequestState.loaded(value));
+          })
+          .catchError((e) => emit(RequestState.error(e.toString())))
+          .timeout(Duration(seconds: 5));
     } catch (e) {
       emit(RequestState.error(e.toString()));
     }

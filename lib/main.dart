@@ -55,6 +55,7 @@ Future<void> main() async {
     notificationsCubit: notificationsCubit,
     vehiclesRepository: VehiclesRepository(
       VehiclesService(httpClient),
+      db,
     ),
     launchesRepository: LaunchesRepository(
       LaunchesService(httpClient),
