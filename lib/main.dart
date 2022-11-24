@@ -53,9 +53,7 @@ Future<void> main() async {
 
   runApp(CherryApp(
     notificationsCubit: notificationsCubit,
-    vehiclesRepository: VehiclesRepository(
-      VehiclesService(httpClient),
-    ),
+    vehiclesRepository: VehiclesRepository(VehiclesService(httpClient), db),
     launchesRepository: LaunchesRepository(
       LaunchesService(httpClient),
       db,
