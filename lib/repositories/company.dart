@@ -14,11 +14,8 @@ class CompanyRepository extends BaseRepository<CompanyService, CompanyInfo> {
   @override
   Future<CompanyInfo> fetchData() async {
     var store = StoreRef<String, String>.main();
-    print('Store: $store');
     var companyDB = await store.record('company').get(db);
-    print('CompanyDB: $companyDB');
     var expired = await store.record('expire_company').get(db);
-    print('Expired: $expired');
     if (expired != null) {
       final stored = DateTime.fromMillisecondsSinceEpoch(int.parse(expired));
       if (stored.isBefore(DateTime.now())) {
@@ -31,7 +28,6 @@ class CompanyRepository extends BaseRepository<CompanyService, CompanyInfo> {
     } else {
       final response = await service.getCompanyInformation();
       storedCompany = response.data;
-      print('StoredCompany: $storedCompany');
       await store.record('company').put(db, jsonEncode(storedCompany));
       await store.record('expire_company').put(
           db,
