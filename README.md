@@ -1,16 +1,5 @@
 # spacex_migrated
 
-A new Flutter project.
+This project is a pseudo-fork from the original SpaceX Go app developed by Jesus Rodriguez which can be found in the following repo: https://github.com/jesusrp98/spacex-go.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The intention of this repository was to migrate the app from Android Embedding v1 to v2 as the first version doesn't allow to run the app locally on recent flutter updates. Also, the purpose of this migration was to be able to run performance tests and to modify the project to provide basic eventual connectivity scenarios which the original app lacked for a university mobile app development course.
