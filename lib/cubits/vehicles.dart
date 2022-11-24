@@ -15,7 +15,6 @@ class VehiclesCubit extends RequestCubit<VehiclesRepository, List<Vehicle>> {
       repository
           .fetchData()
           .then((value) {
-            print(value);
             emit(RequestState.loaded(value));
           })
           .catchError((e) => emit(RequestState.error(e.toString())))

@@ -22,7 +22,6 @@ class VehiclesRepository
     return fetchingData({});
   }
 
-  @override
   Future<List<Vehicle>> fetchingData(data) async {
     var store = StoreRef<String, String>.main();
 
@@ -42,7 +41,7 @@ class VehiclesRepository
       }
     }
 
-    List storedRoadster;
+    var storedRoadster;
     List storedDragon;
     List storedRocket;
     List storedShip;
@@ -51,34 +50,67 @@ class VehiclesRepository
       storedRoadster = jsonDecode(roadsterDB);
     } else {
       final roadsterResponse = await service.getRoadster();
-      RoadsterVehicle.fromJson(roadsterResponse.data);
+      storedRoadster = roadsterResponse.data;
+
+      await store.record('roadster').put(db, jsonEncode(storedRoadster));
+
+      await store.record('expire_vehicles').put(
+          db,
+          DateTime.now()
+              .add(Duration(seconds: 120))
+              .millisecondsSinceEpoch
+              .toString());
     }
 
     if (dragonDB != null) {
       storedDragon = jsonDecode(dragonDB);
     } else {
       final dragonResponse = await service.getDragons();
-      for (final item in dragonResponse.data['docs'])
-        DragonVehicle.fromJson(item);
+      storedDragon = dragonResponse.data['docs'];
+      print(storedDragon);
+      await store.record('dragon').put(db, jsonEncode(storedDragon));
+      await store.record('expire_vehicles').put(
+          db,
+          DateTime.now()
+              .add(Duration(seconds: 120))
+              .millisecondsSinceEpoch
+              .toString());
     }
 
     if (rocketDB != null) {
       storedRocket = jsonDecode(rocketDB);
     } else {
       final rocketResponse = await service.getRockets();
-      for (final item in rocketResponse.data['docs'])
-        RocketVehicle.fromJson(item);
+      storedRocket = rocketResponse.data['docs'];
+
+      await store.record('rocket').put(db, jsonEncode(storedRocket));
+      await store.record('expire_vehicles').put(
+          db,
+          DateTime.now()
+              .add(Duration(seconds: 120))
+              .millisecondsSinceEpoch
+              .toString());
     }
 
     if (shipDB != null) {
       storedShip = jsonDecode(shipDB);
     } else {
       final shipResponse = await service.getShips();
-      for (final item in shipResponse.data['docs']) ShipVehicle.fromJson(item);
+      storedShip = shipResponse.data['docs'];
+      await store.record('ship').put(db, jsonEncode(storedShip));
+      await store.record('expire_vehicles').put(
+          db,
+          DateTime.now()
+              .add(Duration(seconds: 120))
+              .millisecondsSinceEpoch
+              .toString());
     }
 
-    return [storedRoadster, storedDragon, storedRocket, storedShip]
-        .expand((x) => x)
-        .toList();
+    return [
+      RoadsterVehicle.fromJson(storedRoadster),
+      for (final item in storedDragon) DragonVehicle.fromJson(item),
+      for (final item in storedRocket) RocketVehicle.fromJson(item),
+      for (final item in storedShip) ShipVehicle.fromJson(item),
+    ];
   }
 }
